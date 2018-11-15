@@ -6,7 +6,6 @@ import wave
 
 import numpy as np
 
-# Sample width of the live recording
 from stepik_studio_postprocessing.utils.descriptors.audio_file_descriptor import AudioFileDescriptor
 from stepik_studio_postprocessing.utils.types.audio_suffixes import AudioSuffixes
 
@@ -14,9 +13,9 @@ logger = logging.getLogger(__name__)
 
 
 class AdaptiveNoiseCanceller(object):
-    def __init__(self, output_framerate = None,
-                 channels = None,
-                 sample_width = None,
+    def __init__(self, output_framerate=None,
+                 channels=None,
+                 sample_width=None,
                  ratio: float = 1.0,
                  chunk_size: int = 1):
         self.output_framerate = output_framerate
