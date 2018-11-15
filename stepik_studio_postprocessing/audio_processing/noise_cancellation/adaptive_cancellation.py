@@ -6,6 +6,7 @@ import wave
 
 import numpy as np
 
+from stepik_studio_postprocessing.utils import get_output_waveform
 from stepik_studio_postprocessing.utils.descriptors.audio_file_descriptor import AudioFileDescriptor
 from stepik_studio_postprocessing.utils.types.audio_suffixes import AudioSuffixes
 
@@ -17,7 +18,7 @@ class AdaptiveNoiseCanceller(object):
                  channels=None,
                  sample_width=None,
                  ratio: float = 1.0,
-                 chunk_size: int = 1):
+                 chunk_size: int = 1024):
         self.output_framerate = output_framerate
         self.channels = channels
         self.sample_width = sample_width
@@ -54,7 +55,10 @@ class AdaptiveNoiseCanceller(object):
         if not self.channels:
             self.channels = main_wf.getnchannels()
 
-        output_wf = self._get_output_waveform(output_file)
+        output_wf = get_output_waveform(output_file,
+                                        self.channels,
+                                        self.sample_width,
+                                        self.output_framerate)
 
         original = main_wf.readframes(self.chunk_size)
         aux = aux_wf.readframes(self.chunk_size)
@@ -86,20 +90,6 @@ class AdaptiveNoiseCanceller(object):
         if main_wf.getsampwidth() != aux_wf.getsampwidth():
             logger.warning('Input audio files have difference sample width. '
                            'This can lead to loss of quality.')
-
-    def _get_output_waveform(self, output_path: str):
-        """
-        Opens waveform for writing the result
-
-        :param output_path: path to output file
-        :return: Wave_write
-        """
-
-        wf = wave.open(output_path, 'wb')
-        wf.setnchannels(self.channels)
-        wf.setsampwidth(self.sample_width)
-        wf.setframerate(self.output_framerate)
-        return wf
 
     def _invert(self, data):
         """
