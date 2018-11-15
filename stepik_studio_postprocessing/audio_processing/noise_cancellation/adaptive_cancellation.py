@@ -109,13 +109,10 @@ class AdaptiveNoiseCanceller(object):
         :return inverted: The same size of chunked data inverted bitwise
         """
 
-        # Convert the bytestring into an integer
         intwave = np.fromstring(data, np.int32)
-        # Invert the integer
         intwave = np.invert(intwave)
-        # Convert the integer back into a bytestring
         inverted = np.frombuffer(intwave, np.byte)
-        # Return the inverted audio data
+
         return inverted
 
     def _mix_samples(self, sample_1, sample_2):
@@ -124,18 +121,16 @@ class AdaptiveNoiseCanceller(object):
 
         :param sample_1: A bytestring containing the first audio source
         :param sample_2: A bytestring containing the second audio source
-        :param ratio: A float which determines the mix-ratio of the two samples (the higher, the louder the first sample)
         :return mix: A bytestring containing the two samples mixed together
         """
 
-        # Calculate the actual ratios based on the float the function received
         (ratio_1, ratio_2) = self._get_ratios()
-        # Convert the two samples to integers
+
         intwave_sample_1 = np.fromstring(sample_1, np.int16)
         intwave_sample_2 = np.fromstring(sample_2, np.int16)
-        # Mix the two samples together based on the calculated ratios
+
         intwave_mix = (intwave_sample_1 * ratio_1 + intwave_sample_2 * ratio_2).astype(np.int16)
-        # Convert the new mix back to a playable bytestring
+
         mix = np.frombuffer(intwave_mix, np.byte)
         return mix
 
@@ -143,7 +138,6 @@ class AdaptiveNoiseCanceller(object):
         """
         Calculates the ratios using a received float
 
-        :param ratio: A float betwenn 0 and 2 resembling the ratio between two things
         :return ratio_1, ratio_2: The two calculated actual ratios
         """
 
