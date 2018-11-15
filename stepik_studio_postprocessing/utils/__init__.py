@@ -21,6 +21,7 @@ def get_output_waveform(output_path: str, channels, sample_width, output_framera
     wf.setframerate(output_framerate)
     return wf
 
+
 def normalize_signal(signal):
     """
     Normalize signal to [-1, 1] range.
@@ -31,6 +32,7 @@ def normalize_signal(signal):
 
     return signal / np.amax(signal)
 
+
 def frames_to_seconds(frames: int, framerate: int) -> float:
     """
     Duration of frames in seconds:
@@ -40,7 +42,8 @@ def frames_to_seconds(frames: int, framerate: int) -> float:
     :param framerate: frequency of signal
     :return: duration in seconds
     """
-    return frames/framerate
+    return frames / framerate
+
 
 def get_chunk(audio_fd, chunksize: int = 10000):
     with contextlib.closing(wave.open(audio_fd.path, 'r')) as f:

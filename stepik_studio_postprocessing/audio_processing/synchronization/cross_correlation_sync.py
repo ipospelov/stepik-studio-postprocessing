@@ -1,10 +1,7 @@
-import contextlib
 import wave
 
 import numpy as np
-
 from scipy.signal import correlate
-from scipy.ndimage.interpolation import shift
 
 from stepik_studio_postprocessing.utils import normalize_signal, frames_to_seconds, get_output_waveform
 
