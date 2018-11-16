@@ -74,7 +74,7 @@ def get_chunk(audio_fd: AudioFileDescriptor, chunksize: int = 10000):
     with contextlib.closing(wave.open(audio_fd.path, 'r')) as f:
         chunk = f.readframes(chunksize)
 
-    return np.fromstring(chunk, np.int32)
+    return np.fromstring(chunk, audio_fd.get_sample_size())
 
 
 def is_compatible(audio_fd: AudioFileDescriptor, allowable_suffixes: list) -> bool:

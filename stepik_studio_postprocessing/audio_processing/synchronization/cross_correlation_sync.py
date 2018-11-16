@@ -29,7 +29,7 @@ class CorrelationSynchronizer(object):
                                      source.getframerate())
 
         original = source.readframes(self.chunksize)
-        silence = np.zeros(abs(diff), np.int32)
+        silence = np.zeros(abs(diff), audio_1.get_sample_size())
         silence = np.frombuffer(silence, np.byte)
 
         output.writeframes(b''.join(silence))
@@ -56,10 +56,7 @@ class CorrelationSynchronizer(object):
         frames_1 = wf_1.readframes(self.chunksize)
         frames_2 = wf_2.readframes(self.chunksize)
 
-        if audio_1.get_n_channels() == 1:
-            string_size = np.int16
-        else:
-            string_size = np.int32
+        string_size = audio_1.get_sample_size()
 
         frames_1 = np.fromstring(frames_1, string_size)
         frames_2 = np.fromstring(frames_2, string_size)
@@ -73,7 +70,7 @@ class CorrelationSynchronizer(object):
         wf_1.close()
         wf_2.close()
 
-        return lag - self.chunksize
+        return lag - frames_2.size
 
     def _check_compability(self, audio_1, audio_2):
         if audio_1.audio_type != AudioSuffixes.WAV or \
@@ -86,5 +83,9 @@ class CorrelationSynchronizer(object):
             raise TypeError('Audio files must be with the same number of channels')
 
         if audio_1.get_framerate() != audio_2.get_framerate():
+            logger.error('Audio files must be with the same framerate')
+            raise TypeError('Audio files must be with the same framerate')
+
+        if audio_1.get_sample_width() != audio_2.get_sample_width():
             logger.error('Audio files must be with the same framerate')
             raise TypeError('Audio files must be with the same framerate')
