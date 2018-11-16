@@ -52,7 +52,8 @@ def seconds_to_frames(seconds: float, frequency: int) -> int:
     """
     Seconds to number of frames:
     period = 1/frequency
-    number_of_frames = duration_in_seconds / period = frequency_of_signal * duration_in_seconds
+    number_of_frames = duration_in_seconds / period
+    number_of_frames = frequency_of_signal * duration_in_seconds
 
     :param seconds: seconds in float
     :param frequency: frequency of expected signal in hertz (Hz)
@@ -64,9 +65,11 @@ def seconds_to_frames(seconds: float, frequency: int) -> int:
 
 def get_chunk(audio_fd: AudioFileDescriptor, chunksize: int = 10000):
     """
+    Type of returned numpy array depends on input signal
+
     :param audio_fd: AudioFileDescriptor of WAV file
     :param chunksize: number of frames to return
-    :return: Numpy array of numpy.int32 with chunksize size
+    :return: Numpy array
     """
     if not is_compatible(audio_fd, [AudioSuffixes.WAV]):
         raise TypeError('Provides only WAV files processing. {} is not compatible'.format(audio_fd.audio_type))

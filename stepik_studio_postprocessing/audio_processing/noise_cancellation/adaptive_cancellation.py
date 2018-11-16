@@ -133,5 +133,5 @@ class AdaptiveNoiseCanceller(object):
 
         ratio = float(self.ratio)
         ratio_1 = ratio / 2
-        ratio_2 = (2 - ratio) / 2
+        ratio_2 = 1 - ratio_1
         return ratio_1, ratio_2
