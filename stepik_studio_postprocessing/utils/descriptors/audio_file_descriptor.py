@@ -21,3 +21,9 @@ class AudioFileDescriptor(MediaFileDescriptor):
             framerate = f.getframerate()
 
         return framerate
+
+    def get_n_channels(self):
+        with contextlib.closing(wave.open(self.path, 'r')) as f:
+            n_channels = f.getnchannels()
+
+        return n_channels
