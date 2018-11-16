@@ -18,7 +18,7 @@ class AdaptiveNoiseCanceller(object):
                  channels=None,
                  sample_width=None,
                  ratio: float = 1.0,
-                 chunk_size: int = 1024):
+                 chunk_size: int = 4096):
         self.output_framerate = output_framerate
         self.channels = channels
         self.sample_width = sample_width

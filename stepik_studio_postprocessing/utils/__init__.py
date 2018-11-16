@@ -3,6 +3,9 @@ import wave
 
 import numpy as np
 
+from stepik_studio_postprocessing.utils.descriptors.audio_file_descriptor import AudioFileDescriptor
+from stepik_studio_postprocessing.utils.types.audio_suffixes import AudioSuffixes
+
 
 def get_output_waveform(output_path: str, channels, sample_width, output_framerate):
     """
@@ -33,20 +36,54 @@ def normalize_signal(signal):
     return signal / np.amax(signal)
 
 
-def frames_to_seconds(frames: int, framerate: int) -> float:
+def frames_to_seconds(frames: int, frequency: int) -> float:
     """
     Duration of frames in seconds:
     period = 1/frequency; duration = period * number_of_frames
 
     :param frames: number of frames
-    :param framerate: frequency of signal
+    :param frequency: frequency of signal in hertz (Hz)
     :return: duration in seconds
     """
-    return frames / framerate
+    return frames / frequency
 
 
-def get_chunk(audio_fd, chunksize: int = 10000):
+def seconds_to_frames(seconds: float, frequency: int) -> int:
+    """
+    Seconds to number of frames:
+    period = 1/frequency
+    number_of_frames = duration_in_seconds / period = frequency_of_signal * duration_in_seconds
+
+    :param seconds: seconds in float
+    :param frequency: frequency of expected signal in hertz (Hz)
+    :return: duration in frames
+    """
+
+    return int(seconds * frequency)
+
+
+def get_chunk(audio_fd: AudioFileDescriptor, chunksize: int = 10000):
+    """
+    :param audio_fd: AudioFileDescriptor of WAV file
+    :param chunksize: number of frames to return
+    :return: Numpy array of numpy.int32 with chunksize size
+    """
+    if not is_compatible(audio_fd, [AudioSuffixes.WAV]):
+        raise TypeError('Provides only WAV files processing. {} is not compatible'.format(audio_fd.audio_type))
+
     with contextlib.closing(wave.open(audio_fd.path, 'r')) as f:
         chunk = f.readframes(chunksize)
 
     return np.fromstring(chunk, np.int32)
+
+
+def is_compatible(audio_fd: AudioFileDescriptor, allowable_suffixes: list) -> bool:
+    """
+    Checks that type of audio which represented by AudioFileDescriptor is allowable
+
+    :param audio_fd: AudioFileDescriptor
+    :param allowable_suffixes: list of allowable audio extensions
+    :return: bool
+    """
+
+    return audio_fd.audio_type in allowable_suffixes
