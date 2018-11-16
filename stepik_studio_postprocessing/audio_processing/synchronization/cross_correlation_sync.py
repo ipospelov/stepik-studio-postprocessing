@@ -31,7 +31,7 @@ class CorrelationSynchronizer(object):
 
         while original != b'':
             output.writeframes(b''.join(np.frombuffer(original, np.byte)))
-            original = source.readframtes(self.chunksize)
+            original = source.readframes(self.chunksize)
 
         source.close()
         output.close()
